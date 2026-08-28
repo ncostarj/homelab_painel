@@ -1,0 +1,31 @@
+services:
+  painel-nginx:
+    image: nginx:alpine
+    hostname: painel-nginx
+    container_name: painel-nginx
+    restart: unless-stopped
+    working_dir: /var/www/html/painel
+    volumes:
+      - ./src:/var/www/html/painel
+      - ./docker/nginx/painel.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - painel-php    
+    networks:
+      - proxy
+  painel-php:
+    image: homelab/php:8.2
+    hostname: painel-php
+    container_name: painel-php
+    working_dir: /var/www/html/painel
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html/painel
+    networks:
+      - proxy
+      - internal
+networks:
+  proxy:
+    external: true
+  internal:
+    external: true
+
