@@ -11,21 +11,24 @@ services:
     depends_on:
       - painel-php    
     networks:
-      - proxy
+      - harbor-gateway
   painel-php:
-    image: homelab/php:8.2
+    image: harbor/php:8.2-fpm
     hostname: painel-php
     container_name: painel-php
     working_dir: /var/www/html/painel
     restart: unless-stopped
     volumes:
       - ./src:/var/www/html/painel
+      - ~/.ssh:/home/harbor/.ssh:ro
     networks:
-      - proxy
-      - internal
+      harbor-gateway:
+        aliases: 
+          - painel.localhost
+      harbor-data:
 networks:
-  proxy:
+  harbor-gateway:
     external: true
-  internal:
+  harbor-data:
     external: true
 
